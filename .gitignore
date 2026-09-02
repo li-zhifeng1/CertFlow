@@ -1,0 +1,8 @@
+# ---- OS・エディタ ----
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+
+# ---- ローカル専用：このPCの自動同期スクリプト（他人の環境には不要） ----
+sync.bat
