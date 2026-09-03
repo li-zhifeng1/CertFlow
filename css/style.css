@@ -1,0 +1,790 @@
+/*
+ * CertFlow 共通スタイル
+ * 「パソコンを中心に、スマートフォンでも確認できる画面」を目指す。
+ */
+
+/* ---- 色の定義（まとめておくと後から変更しやすい） ----
+   第5段階のデザイン方針：白・深紅（#82122F）・暖グレーを中心とした業務ツール配色。
+   承認待ち＝琥珀、承認済み＝緑、却下＝明るい赤で区別する。 */
+:root {
+  --color-primary: #82122f;        /* メインカラー（ワインレッド） */
+  --color-primary-dark: #650d25;   /* hover など（深紅） */
+  --color-primary-light: #9b1b3c;  /* フォーカスリング・強調 */
+  --color-bg: #f7f5f3;             /* 背景色（暖白） */
+  --color-card: #ffffff;           /* カード（白背景） */
+  --color-border: #e9e4e3;         /* 罫線（暖グレー） */
+  --color-text: #26262a;           /* 本文（柔らかいチャコール） */
+  --color-text-sub: #6e7076;       /* 補足 */
+  --color-danger: #c62828;         /* 卻下・注意を表す明るい赤 */
+  --radius: 8px;                   /* 角の丸み */
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.12);
+  --focus-ring: 0 0 0 3px rgba(130, 18, 47, 0.22);
+}
+
+/* 全要素で幅の計算をそろえる */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "BIZ UDPGothic", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 操作要素の共通トランジション（150ms 以内でキビキビ決まる） ---- */
+.btn,
+.nav-link,
+.tab-button,
+.card,
+.stat-card,
+.form-input,
+.form-select,
+.message {
+  transition: background-color 0.15s ease, color 0.15s ease,
+              border-color 0.15s ease, box-shadow 0.2s ease,
+              transform 0.2s ease;
+}
+
+/* ---- キーボード操作者向けにフォーカスを可視化（アクセシビリティ） ---- */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---- 動きを減らす設定のユーザー向け（トランジションを無効化） ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---- 表示するたびに流れる、さりげないフェード（画面切替の心地よさ） ---- */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card,
+.stat-card {
+  animation: card-in 0.18s ease both;
+}
+
+/* ================= ヘッダー（深紅）×（役割切替ボタン） ================= */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border-bottom: 2px solid rgba(183, 121, 31, 0.45); /* 報奨金テーマの金のアクセント線 */
+}
+
+.header-brand h1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  margin: 0;
+  color: #ffffff;
+}
+
+/* ロゴマーク：円形チェックで「資格・Certificate」を象徴（CSSのみ・HTML無変更） */
+.header-brand h1::before {
+  content: "\2713";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.header-caption {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.current-role {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* ヘッダー内のボタン（白文字・透明背景） */
+.header .btn {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.header .btn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+/* 選択中の役割ボタンは白背景＋深紅文字にする */
+.header .btn.is-active {
+  background: #ffffff;
+  color: var(--color-primary);
+  border-color: #ffffff;
+}
+
+/* データ初期化ボタンは白背景＋赤文字にする */
+.header .btn-outline-danger {
+  background: #ffffff;
+  color: var(--color-danger);
+  border-color: #ffffff;
+}
+
+/* ================= ボタン ================= */
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+/* 選択中（アクティブ）のボタン */
+.btn.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* 押下中は少し縮めて「押した」感触を出す（文字の可読性には影響しない） */
+.btn:active,
+.nav-link:active,
+.tab-button:active {
+  transform: scale(0.98);
+}
+
+/* 赤い枠のボタン（データ初期化など注意が必要な操作） */
+.btn-outline-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background: #ffffff;
+}
+
+.btn-outline-danger:hover {
+  background: #fdecec;
+}
+
+/* ================= ナビゲーション（白背景） ================= */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav-link {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background: #faf1f3;
+}
+
+.nav-link.is-active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ================= メインコンテンツ ================= */
+.content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/*
+ * 第1段階用の仮組み（プレースホルダ）カード。
+ * 第2段階以降、各画面を実装するときにこのクラスは使わなくなる。
+ */
+.placeholder {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-top: 8px;
+}
+
+.placeholder-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.placeholder-stage {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--color-primary-dark);
+  background: #f4e2e7;
+  border-radius: 12px;
+  padding: 2px 10px;
+  margin-bottom: 12px;
+}
+
+.placeholder-text {
+  margin: 0;
+}
+
+.placeholder-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+/* ================= フッター ================= */
+.footer {
+  padding: 16px 20px 28px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+/* ================= スマートフォン対応 ================= */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* 横に長いナビは横スクロールで見られるようにする */
+  .nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .content {
+    padding: 12px;
+  }
+}
+
+/* ======================================================
+   第2段階：一覧・検索・フォーム・ステータス表示など
+   ====================================================== */
+
+/* 承認待ち（黄）・承認済み（緑）・却下（赤）の配色を追加 */
+:root {
+  --color-ok: #1e7a3a;
+  --color-ok-bg: #e8f5ec;
+  --color-warn: #9a6700;
+  --color-warn-bg: #fbf3dd;
+  --color-danger-bg: #fdecec;
+  --color-info: #0b55aa;
+  --color-info-bg: #eaf3fc;
+}
+
+/* 画面タイトル */
+.view-title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+}
+
+/* ---- 検索・絞り込みバー ---- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* ---- フォーム部品 ---- */
+.form-input,
+.form-select {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: #ffffff;
+  color: var(--color-text);
+}
+
+.toolbar .form-input,
+.toolbar .form-select {
+  width: auto;
+  min-width: 160px;
+}
+
+/* フォーカス時はブランド色の枠＋リングで「いる場所」を明示 */
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-sub);
+  opacity: 1;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* （必須）の赤い表記 */
+.form-group label em {
+  font-style: normal;
+  color: var(--color-danger);
+  font-size: 12px;
+}
+
+.form-actions {
+  margin-top: 6px;
+}
+
+/* ---- カード ---- */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* 資格カードのグリッド */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.qualif-card {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ホバーで軽く浮かせて「操作できるカード」だと分かるようにする */
+.qualif-card:hover,
+.stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.qualif-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.qualif-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.qualif-detail {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  row-gap: 4px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.qualif-detail dt {
+  color: var(--color-text-sub);
+}
+
+.qualif-detail dd {
+  margin: 0;
+}
+
+.qualif-description {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+/* ---- ステータスバッジ ---- */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.badge-ok {
+  background: var(--color-ok-bg);
+  color: var(--color-ok);
+  border: 1px solid var(--color-ok);
+}
+
+.badge-warn {
+  background: var(--color-warn-bg);
+  color: var(--color-warn);
+  border: 1px solid var(--color-warn);
+}
+
+.badge-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.badge-info {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+}
+
+/* ---- 用途別ボタン ---- */
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-success {
+  background: var(--color-ok);
+  border-color: var(--color-ok);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: #15803d;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+/* ---- 結果メッセージ ---- */
+.message {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.message-success {
+  background: var(--color-ok-bg);
+  color: var(--color-ok);
+  border: 1px solid var(--color-ok);
+}
+
+.message-error {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+/* ---- リスト行（申請一覧など） ---- */
+.list-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.list-row:last-child {
+  border-bottom: none;
+}
+
+.list-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.list-title {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.list-row-sub {
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+/* 一覧の行はホバーで薄く照らす（どこがクリック対象か分かりやすく） */
+.list-row:hover {
+  background: #faf1f3;
+}
+
+/* ---- 上司の承認フォーム ---- */
+.approval-card {
+  border-left: 4px solid var(--color-warn);
+}
+
+.approval-form {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.approval-form .form-group label {
+  font-size: 12px;
+}
+
+/* ---- 空状態のメッセージ（中央寄せで「ここにデータが無い」とわかる） ---- */
+.empty-text {
+  color: var(--color-text-sub);
+  font-size: 13px;
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+}
+
+/* ---- 2カラム（申請フォーム＋自分の申請一覧） ---- */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ======================================================
+   第3段階：受験申請・承認画面の小物スタイル
+   ====================================================== */
+
+/* 注意を促す黄色のメッセージ */
+.message-warn {
+  background: var(--color-warn-bg);
+  color: var(--color-warn);
+  border: 1px solid var(--color-warn);
+}
+
+/* 小さめのボタン（資格カード内の「受験申請」など） */
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+/* 資格カード内の操作ボタン置き場 */
+.qualif-actions {
+  margin-top: 8px;
+}
+
+/* フォーム内の2列（受験日と予定費用など） */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 700px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ======================================================
+   第4段階：結果報告・費用申請の小物スタイル
+   ====================================================== */
+
+/* フォーム内の補足説明（目標点数など） */
+.hint-text {
+  font-size: 12px;
+  color: var(--color-text-sub);
+  margin-top: 2px;
+}
+
+/* ラジオボタンの横並び（合否・領収書など） */
+.inline-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 2px;
+}
+
+.inline-options label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ======================================================
+   第5段階：ダッシュボード・一覧タブ・最終調整
+   ====================================================== */
+
+/* ダッシュボードの数値カード */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+}
+
+.stat-value {
+  font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+/* 操作ボタンの置き場（ダッシュボード下部など） */
+.stat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stat-actions .btn {
+  margin: 0;
+}
+
+/* 一覧画面のタブ */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #ffffff;
+  font-size: 13px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.tab-button:hover {
+  background: #faf1f3;
+}
+
+.tab-button.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ======================================================
+   印刷対応：申請書・一覧を 紙/PDF として整えて出力できるようにする
+   ====================================================== */
+@media print {
+  /* 画面専用の操作（ボタン・ナビ・ツールバー）は印刷に出さない */
+  .header-actions,
+  .nav,
+  .footer,
+  .btn,
+  .tabs,
+  .toolbar {
+    display: none !important;
+  }
+
+  /* 背景を白・文字を黒に寄せて印刷コストを下げる（ブランド赤は残す） */
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  /* 印刷幅いっぱい・余白を詰めて情報量を確保 */
+  .content {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* カードのシャドウを消し、分割で途切れないようにする */
+  .card,
+  .stat-card,
+  .qualif-card {
+    box-shadow: none;
+    border: 1px solid #cccccc;
+    break-inside: avoid;
+  }
+}
